@@ -62,7 +62,7 @@
 
         .container {
             text-align: center;
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.05); /* Adjusted transparency here */
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.3);
@@ -75,8 +75,7 @@
         #countdown {
             font-size: 2.5em;
             color: #2c3e50;
-            /* REDUCE EL MARGEN SUPERIOR PARA ACERCARLO AL TÍTULO */
-            margin: 5px 0; /* Antes era 20px 0 */
+            margin: 5px 0;
         }
         #nextBus {
             font-size: 1.2em;
@@ -92,8 +91,7 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
             text-fill-color: transparent;
-            /* AÑADE O AJUSTA EL MARGEN INFERIOR SI ES NECESARIO */
-            margin-bottom: 0; /* Por defecto, h1 tiene un margen inferior. Lo ponemos a 0. */
+            margin-bottom: 0;
         }
 
         .progress-container {
@@ -237,7 +235,7 @@
 </head>
 <body>
     <img src="https://upload.wikimedia.org/wikipedia/commons/archive/d/d0/20250508163912%21Emirates_logo.svg"
-         alt="Emirates Logo" class="emirates-logo">
+            alt="Emirates Logo" class="emirates-logo">
     <div class="container">
         <h1 id="routeTitle">Grosvenor to HQ in</h1>
         <div id="countdown">00:00</div>
