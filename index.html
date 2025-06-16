@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Grosvenor</title>
+    <link rel="apple-touch-icon" href="https://i.imghippo.com/files/tEG3031vlA.png">
+    <link rel="apple-touch-startup-image" href="https://example.com/splash.png">
+    <style>
+        @font-face {
+            font-family: 'Emirates Bold';
+            src: url('https://c.ekstatic.net/shared/fonts/emirates/emirates-bold-v3.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        html {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            touch-action: none;
+            background-color: #191970;
+        }
+
+        body {
+            font-family: 'Emirates Bold';
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #191970, #000080);
+            background-size: cover;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            touch-action: none;
+            box-sizing: border-box;
+        }
+
+        .emirates-logo {
+            position: absolute;
+            bottom: calc(10px + env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            object-position: center;
+            opacity: 0.9;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            z-index: 2;
+            position: relative;
+            margin-top: env(safe-area-inset-top);
+            margin-bottom: env(safe-area-inset-bottom);
+        }
+
+        #countdown {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin: 20px 0;
+        }
+        #nextBus {
+            font-size: 1.2em;
+            color: #7f8c8d;
+        }
+        .progress-container {
+            width: 300px;
+            margin: 20px auto;
+            position: relative;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0;
+            background-color: #ccc;
+            border-radius: 5px;
+            transition: width 0.5s linear, background-color 0.5s linear;
+        }
+        .bus-emoji {
+            font-size: 24px;
+            position: absolute;
+            top: -20px;
+            left: 0;
+            transform: scaleX(-1);
+            transition: left 0.5s linear;
+        }
+        .dune {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 25vh;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        .dune-gradient {
+            fill: url(#duneGradient);
+        }
+        #celestialBody {
+            font-size: 60px;
+            position: absolute;
+            transition: none;
+            z-index: 1;
+            opacity: 1;
+            pointer-events: none;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .stars-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 75vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .star {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: fade 3s infinite;
+        }
+        @keyframes fade {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.1; }
+            100% { opacity: 0.3; }
+        }
+        .input-container {
+            margin-top: 20px;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .input-container span {
+            font-family: 'Emirates Bold';
+            font-size: 1.2em;
+            color: #2c3e50;
+        }
+        #busTimeInput {
+            padding: 10px;
+            font-size: 1.2em;
+            border: 2px solid #2c3e50;
+            border-radius: 5px;
+            outline: none;
+            width: 120px;
+            text-align: center;
+            background-color: white;
+            color: #2c3e50;
+        }
+        #playButton {
+            padding: 5px 10px;
+            font-size: 1em;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #playButton:hover {
+            background-color: #34495e;
+        }
+        #closestTimes {
+            margin-top: 10px;
+            font-size: 1.1em;
+            color: #2c3e50;
+            display: none;
+        }
+        #eGateButton {
+            padding: 0 20px;
+            font-size: 1.2em;
+            font-family: 'Emirates Bold';
+            background: white;
+            color: #2c3e50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            width: 100px;
+            height: 24px;
+            line-height: 24px;
+            box-sizing: border-box;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        #eGateButton:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/archive/d/d0/20250508163912%21Emirates_logo.svg"
+         alt="Emirates Logo" class="emirates-logo">
+    <div class="container">
+        <h1 id="routeTitle">Grosvenor to HQ in</h1>
+        <div id="countdown">00:00</div>
+        <div id="nextBus">Next bus at: --:--</div>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="bus-emoji" id="busEmoji">🚌</div>
+        </div>
+        <div class="button-container">
+            <button id="eGateButton">eGate</button>
+        </div>
+        <div class="input-container">
+            <span>eGate</span>
+            <input type="time" id="busTimeInput">
+            <button id="playButton">✕</button>
+        </div>
+        <div id="closestTimes"></div>
+    </div>
+    <div id="celestialBody">☀️</div>
+    <div class="stars-container" id="starsContainer"></div>
+
+    <script>
+        let starsCreated = false;
+
+        const grosvenorToHQSchedule = [
+            { gros: "00:43", hq: "01:03" }, { gros: "01:03", hq: "01:23" }, { gros: "01:23", hq: "01:43" },
+            { gros: "01:43", hq: "02:03" }, { gros: "02:03", hq: "02:23" }, { gros: "02:23", hq: "02:43" },
+            { gros: "02:53", hq: "03:13" }, { gros: "03:23", hq: "03:43" }, { gros: "03:53", hq: "04:13" },
+            { gros: "04:23", hq: "04:43" }, { gros: "04:48", hq: "05:08" }, { gros: "05:08", hq: "05:28" },
+            { gros: "05:28", hq: "05:48" }, { gros: "05:53", hq: "06:13" }, { gros: "06:13", hq: "06:33" },
+            { gros: "06:33", hq: "06:53" }, { gros: "06:53", hq: "07:13" }, { gros: "07:13", hq: "07:33" },
+            { gros: "07:38", hq: "07:58" }, { gros: "08:03", hq: "08:23" }, { gros: "08:28", hq: "08:48" },
+            { gros: "08:53", hq: "09:13" }, { gros: "09:18", hq: "09:38" }, { gros: "09:48", hq: "10:08" },
+            { gros: "10:13", hq: "10:33" }, { gros: "10:38", hq: "10:58" }, { gros: "11:03", hq: "11:23" },
+            { gros: "11:28", hq: "11:48" }, { gros: "11:53", hq: "12:13" }, { gros: "12:18", hq: "12:38" },
+            { gros: "12:38", hq: "12:58" }, { gros: "12:58", hq: "13:18" }, { gros: "13:18", hq: "13:38" },
+            { gros: "13:38", hq: "13:58" }, { gros: "13:58", hq: "14:18" }, { gros: "14:18", hq: "14:38" },
+            { gros: "14:43", hq: "15:03" }, { gros: "15:08", hq: "15:28" }, { gros: "15:33", hq: "15:53" },
+            { gros: "15:58", hq: "16:18" }, { gros: "16:23", hq: "16:43" }, { gros: "16:48", hq: "17:08" },
+            { gros: "17:17", hq: "17:39" }, { gros: "17:42", hq: "18:04" }, { gros: "18:07", hq: "18:32" },
+            { gros: "18:32", hq: "18:57" }, { gros: "18:57", hq: "19:22" }, { gros: "19:22", hq: "19:47" },
+            { gros: "19:47", hq: "20:12" }, { gros: "20:12", hq: "20:34" }, { gros: "20:37", hq: "20:59" },
+            { gros: "21:00", hq: "21:20" }, { gros: "21:23", hq: "21:43" }, { gros: "21:48", hq: "22:08" },
+            { gros: "22:13", hq: "22:33" }, { gros: "22:38", hq: "22:58" }, { gros: "23:03", hq: "23:23" },
+            { gros: "23:28", hq: "23:48" }, { gros: "23:53", hq: "00:13" }, { gros: "00:18", hq: "00:38" }
+        ];
+
+        function getBusTimes() {
+            const currentSchedule = grosvenorToHQSchedule.map(item => item.gros);
+            const now = new Date();
+            const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes() + (now.getSeconds() + now.getMilliseconds() / 1000) / 60;
+
+            // Create an extended schedule to handle times across midnight
+            const extendedSchedule = currentSchedule.map(timeStr => {
+                const [hours, minutes] = timeStr.split(':').map(Number);
+                return hours * 60 + minutes;
+            }).sort((a, b) => a - b); // Ensure base schedule is sorted by minutes
+
+            let nextBusMinutes = null;
+            let previousBusMinutes = null;
+
+            // Find the next bus time
+            for (let i = 0; i < extendedSchedule.length; i++) {
+                if (extendedSchedule[i] > currentTimeInMinutes) {
+                    nextBusMinutes = extendedSchedule[i];
+                    previousBusMinutes = extendedSchedule[i - 1] || extendedSchedule[extendedSchedule.length - 1] - 1440; // Handle wrap-around for previous
+                    break;
+                }
+            }
+
+            // If no bus found after current time, it means we wrapped around to the next day
+            if (nextBusMinutes === null) {
+                nextBusMinutes = extendedSchedule[0] + 1440; // First bus of next day
+                previousBusMinutes = extendedSchedule[extendedSchedule.length - 1]; // Last bus of current day
+            } else if (previousBusMinutes === null) { // This handles the very first period of the day if current time is before first bus
+                previousBusMinutes = extendedSchedule[extendedSchedule.length - 1] - 1440; // Last bus of previous day
+            }
+
+
+            // Convert back minutes to HH:MM format for display
+            const formatMinutesToTime = (totalMins) => {
+                const h = Math.floor(totalMins / 60) % 24; // Use modulo 24 to get hour within day
+                const m = Math.floor(totalMins % 60);
+                return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+            };
+            
+            return {
+                previousBus: { time: formatMinutesToTime(previousBusMinutes), minutes: previousBusMinutes },
+                nextBus: { time: formatMinutesToTime(nextBusMinutes), minutes: nextBusMinutes }
+            };
+        }
+
+        function updateSkyAndCelestial() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const totalMinutes = hours * 60 + minutes;
+
+            const celestial = document.getElementById('celestialBody');
+            const starsContainer = document.getElementById('starsContainer');
+            let newGradient;
+
+            const sunriseStart = 5 * 60;
+            const sunriseEnd = 7 * 60;
+            const dayEnd = 17 * 60;
+            const sunsetEnd = 19 * 60;
+
+            function interpolateColor(color1, color2, factor) {
+                const result = color1.slice(1).match(/.{2}/g).map((hex, i) => {
+                    const c1 = parseInt(hex, 16);
+                    const c2 = parseInt(color2.slice(1).match(/.{2}/g)[i], 16);
+                    const value = Math.round(c1 + (c2 - c1) * factor);
+                    return value.toString(16).padStart(2, '0');
+                });
+                return `#${result.join('')}`;
+            }
+
+            if (totalMinutes >= sunriseStart && totalMinutes < sunriseEnd) {
+                const factor = (totalMinutes - sunriseStart) / (sunriseEnd - sunriseStart);
+                const topColor = interpolateColor('#ff4500', '#ffd700', factor);
+                const bottomColor = interpolateColor('#ff69b4', '#87ceeb', factor);
+                newGradient = `linear-gradient(to bottom, ${topColor}, ${bottomColor})`;
+                celestial.textContent = '☀️';
+                starsContainer.style.display = 'none';
+            } else if (totalMinutes >= sunriseEnd && totalMinutes < dayEnd) {
+                const factor = (totalMinutes - sunriseEnd) / (dayEnd - sunriseEnd);
+                const topColor = interpolateColor('#87ceeb', '#4682b4', factor);
+                const bottomColor = interpolateColor('#b0e0e6', '#1e90ff', factor);
+                newGradient = `linear-gradient(to bottom, ${topColor}, ${bottomColor})`;
+                celestial.textContent = '☀️';
+                starsContainer.style.display = 'none';
+            } else if (totalMinutes >= dayEnd && totalMinutes < sunsetEnd) {
+                const factor = (totalMinutes - dayEnd) / (sunsetEnd - dayEnd);
+                const topColor = interpolateColor('#ffd700', '#ff4500', factor);
+                const bottomColor = interpolateColor('#ff8c00', '#4b0082', factor);
+                newGradient = `linear-gradient(to bottom, ${topColor}, ${bottomColor})`;
+                celestial.textContent = '☀️';
+                starsContainer.style.display = 'none';
+            } else {
+                const factor = ((totalMinutes < sunriseStart ? totalMinutes + 1440 : totalMinutes) - sunsetEnd) / (sunriseStart + 1440 - sunsetEnd);
+                const topColor = interpolateColor('#191970', '#000033', factor);
+                const bottomColor = interpolateColor('#000080', '#1c2526', factor);
+                newGradient = `linear-gradient(to bottom, ${topColor}, ${bottomColor})`;
+                celestial.textContent = '🌙';
+                starsContainer.style.display = 'block';
+                if (!starsCreated) {
+                    createStars();
+                    starsCreated = true;
+                }
+            }
+
+            document.body.style.transition = 'background 5s ease';
+            document.body.style.background = newGradient;
+
+            let progress;
+            if (totalMinutes >= sunriseStart && totalMinutes < sunsetEnd) {
+                progress = (totalMinutes - sunriseStart) / (sunsetEnd - sunriseStart);
+            } else {
+                const adjustedMinutes = totalMinutes < sunriseStart ? totalMinutes + 1440 : totalMinutes;
+                progress = (adjustedMinutes - sunsetEnd) / (sunriseStart + 1440 - sunsetEnd);
+            }
+            progress = Math.max(0, Math.min(1, progress));
+
+            const xPos = 5 + progress * 90;
+            const yPos = 90 - 80 * 4 * progress * (1 - progress);
+
+            celestial.style.left = `${xPos}vw`;
+            celestial.style.top = `${yPos}vh`;
+            celestial.style.display = 'block';
+        }
+
+        function updateCountdown() {
+            const now = new Date();
+            const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes() + (now.getSeconds() + now.getMilliseconds() / 1000) / 60;
+            const { previousBus, nextBus } = getBusTimes();
+            let timeDifference = nextBus.minutes - currentTimeInMinutes;
+
+            const minutes = Math.floor(timeDifference % 60);
+            const seconds = Math.floor((timeDifference * 60) % 60);
+
+            document.getElementById('countdown').textContent =
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById('nextBus').textContent = `Next bus at: ${nextBus.time}`;
+
+            const totalDuration = (nextBus.minutes - previousBus.minutes);
+            const elapsed = (currentTimeInMinutes - previousBus.minutes);
+            const percentage = (elapsed / totalDuration) * 100;
+            const busPosition = Math.min(Math.max(percentage, 0), 100) * 2.76;
+
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = `${Math.min(Math.max(percentage, 0), 100)}%`;
+
+            const remainingMinutes = timeDifference;
+            if (remainingMinutes <= 3 && remainingMinutes > 2.9167) {
+                progressFill.style.transition = 'background-color 5s linear';
+                progressFill.style.backgroundColor = 'rgb(255, 0, 0)';
+            } else if (remainingMinutes > 3) {
+                const startColor = 204;
+                const endColor = 51;
+                const colorValue = Math.round(startColor - (startColor - endColor) * (percentage / 100));
+                progressFill.style.backgroundColor = `rgb(${colorValue}, ${colorValue}, ${colorValue})`;
+                progressFill.style.transition = 'background-color 0.5s linear';
+            } else if (remainingMinutes <= 2.9167) {
+                progressFill.style.backgroundColor = 'rgb(255, 0, 0)';
+                progressFill.style.transition = 'none';
+            }
+
+            document.getElementById('busEmoji').style.left = `${busPosition}px`;
+            
+            updateSkyAndCelestial();
+        }
+
+        function createStars() {
+            const starsContainer = document.getElementById('starsContainer');
+            const numberOfStars = 50;
+
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+
+                const x = Math.random() * 100;
+                const y = Math.random() * 75;
+                const size = Math.random() * 3 + 1;
+
+                star.style.left = `${x}vw`;
+                star.style.top = `${y}vh`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+
+                const delay = Math.random() * 3;
+                star.style.animationDelay = `${delay}s`;
+
+                starsContainer.appendChild(star);
+            }
+        }
+
+        function findClosestBusTimes(inputTime) {
+            const [inputHours, inputMinutes] = inputTime.split(':').map(Number);
+            const targetTimeInMinutes = inputHours * 60 + inputMinutes;
+            const maxDelayMinutes = 50;
+
+            const schedule = grosvenorToHQSchedule.map(item => ({
+                gros: item.gros,
+                hq: item.hq,
+                grosMinutes: item.gros.split(':').map(Number)[0] * 60 + item.gros.split(':').map(Number)[1],
+                hqMinutes: item.hq.split(':').map(Number)[0] * 60 + item.hq.split(':').map(Number)[1]
+            }));
+
+            // Extend schedule to handle times across midnight for comparison
+            const extendedSchedule = [];
+            schedule.forEach(item => {
+                extendedSchedule.push(item); // Current day's times
+                extendedSchedule.push({ // Next day's times
+                    gros: item.gros, // Keep original time string
+                    hq: item.hq,     // Keep original time string
+                    grosMinutes: item.grosMinutes + 1440,
+                    hqMinutes: item.hqMinutes + 1440
+                });
+            });
+
+            const validTimes = extendedSchedule.filter(item => {
+                const diff = item.hqMinutes - targetTimeInMinutes;
+                // Consider times that are after current input, and up to maxDelayMinutes into the future
+                return diff >= 0 && diff <= maxDelayMinutes;
+            });
+
+            validTimes.sort((a, b) => a.hqMinutes - b.hqMinutes); // Sort by HQ arrival time
+
+            return validTimes.slice(0, 3).map(item => ({ gros: item.gros, hq: item.hq }));
+        }
+
+        document.getElementById('playButton').addEventListener('click', function() {
+            document.querySelector('.input-container').style.display = 'none';
+            document.getElementById('closestTimes').style.display = 'none';
+            const eGateButton = document.getElementById('eGateButton');
+            eGateButton.style.display = 'inline-block';
+            eGateButton.style.width = '100px';
+            eGateButton.style.height = '24px';
+            eGateButton.style.background = 'white';
+        });
+
+        document.getElementById('busTimeInput').addEventListener('change', function() {
+            const input = document.getElementById('busTimeInput').value.trim();
+            const closestTimesDiv = document.getElementById('closestTimes');
+
+            if (!input) {
+                closestTimesDiv.textContent = '';
+                closestTimesDiv.style.display = 'none';
+                return;
+            }
+
+            const closestTimes = findClosestBusTimes(input);
+            if (closestTimes.length === 0) {
+                closestTimesDiv.textContent = '';
+                closestTimesDiv.style.display = 'none';
+            } else {
+                const result = closestTimes.map(item => `${item.gros} ➡️ ${item.hq}`).join(', ');
+                closestTimesDiv.textContent = result;
+                closestTimesDiv.style.display = 'block';
+            }
+        });
+
+        document.getElementById('eGateButton').addEventListener('click', function() {
+            document.getElementById('eGateButton').style.display = 'none';
+            document.querySelector('.input-container').style.display = 'flex';
+        });
+
+        window.onload = function() {
+            window.scrollTo(0, 0);
+            updateSkyAndCelestial();
+            updateCountdown();
+            const now = new Date();
+            if (now.getHours() < 6 || now.getHours() >= 18) {
+                createStars();
+            }
+        };
+
+        let intervalId = null;
+        function startUpdateLoop() {
+            if (intervalId) clearInterval(intervalId);
+            intervalId = setInterval(updateCountdown, 100);
+        }
+
+        startUpdateLoop();
+    </script>
+    <svg class="dune" viewBox="0 0 1000 250" preserveAspectRatio="none">
+    <defs>
+        <linearGradient id="duneGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#f4e4bc;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#edc9af;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#d2a679;stop-opacity:0.8" />
+        </linearGradient>
+    </defs>
+    <path class="dune-gradient" d="
+        M0,250
+        C120,225 320,130 430,80
+        C540,50 680,110 860,190
+        C930,220 1000,235 1000,250
+        L1000,250
+        L0,250
+        Z" />
+</svg>
+</body>
+</html>
