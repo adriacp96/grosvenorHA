@@ -75,12 +75,27 @@
         #countdown {
             font-size: 2.5em;
             color: #2c3e50;
-            margin: 20px 0;
+            /* REDUCE EL MARGEN SUPERIOR PARA ACERCARLO AL TÍTULO */
+            margin: 5px 0; /* Antes era 20px 0 */
         }
         #nextBus {
             font-size: 1.2em;
             color: #7f8c8d;
         }
+
+        #routeTitle {
+            font-size: 2em;
+            font-weight: bold;
+            display: inline-block;
+            background: linear-gradient(to bottom, #191970, #000080);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-fill-color: transparent;
+            /* AÑADE O AJUSTA EL MARGEN INFERIOR SI ES NECESARIO */
+            margin-bottom: 0; /* Por defecto, h1 tiene un margen inferior. Lo ponemos a 0. */
+        }
+
         .progress-container {
             width: 300px;
             margin: 20px auto;
@@ -277,36 +292,31 @@
             const now = new Date();
             const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes() + (now.getSeconds() + now.getMilliseconds() / 1000) / 60;
 
-            // Create an extended schedule to handle times across midnight
             const extendedSchedule = currentSchedule.map(timeStr => {
                 const [hours, minutes] = timeStr.split(':').map(Number);
                 return hours * 60 + minutes;
-            }).sort((a, b) => a - b); // Ensure base schedule is sorted by minutes
+            }).sort((a, b) => a - b);
 
             let nextBusMinutes = null;
             let previousBusMinutes = null;
 
-            // Find the next bus time
             for (let i = 0; i < extendedSchedule.length; i++) {
                 if (extendedSchedule[i] > currentTimeInMinutes) {
                     nextBusMinutes = extendedSchedule[i];
-                    previousBusMinutes = extendedSchedule[i - 1] || extendedSchedule[extendedSchedule.length - 1] - 1440; // Handle wrap-around for previous
+                    previousBusMinutes = extendedSchedule[i - 1] || extendedSchedule[extendedSchedule.length - 1] - 1440;
                     break;
                 }
             }
 
-            // If no bus found after current time, it means we wrapped around to the next day
             if (nextBusMinutes === null) {
-                nextBusMinutes = extendedSchedule[0] + 1440; // First bus of next day
-                previousBusMinutes = extendedSchedule[extendedSchedule.length - 1]; // Last bus of current day
-            } else if (previousBusMinutes === null) { // This handles the very first period of the day if current time is before first bus
-                previousBusMinutes = extendedSchedule[extendedSchedule.length - 1] - 1440; // Last bus of previous day
+                nextBusMinutes = extendedSchedule[0] + 1440;
+                previousBusMinutes = extendedSchedule[extendedSchedule.length - 1];
+            } else if (previousBusMinutes === null) {
+                previousBusMinutes = extendedSchedule[extendedSchedule.length - 1] - 1440;
             }
 
-
-            // Convert back minutes to HH:MM format for display
             const formatMinutesToTime = (totalMins) => {
-                const h = Math.floor(totalMins / 60) % 24; // Use modulo 24 to get hour within day
+                const h = Math.floor(totalMins / 60) % 24;
                 const m = Math.floor(totalMins % 60);
                 return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
             };
@@ -473,13 +483,12 @@
                 hqMinutes: item.hq.split(':').map(Number)[0] * 60 + item.hq.split(':').map(Number)[1]
             }));
 
-            // Extend schedule to handle times across midnight for comparison
             const extendedSchedule = [];
             schedule.forEach(item => {
-                extendedSchedule.push(item); // Current day's times
-                extendedSchedule.push({ // Next day's times
-                    gros: item.gros, // Keep original time string
-                    hq: item.hq,     // Keep original time string
+                extendedSchedule.push(item);
+                extendedSchedule.push({
+                    gros: item.gros,
+                    hq: item.hq,
                     grosMinutes: item.grosMinutes + 1440,
                     hqMinutes: item.hqMinutes + 1440
                 });
@@ -487,11 +496,10 @@
 
             const validTimes = extendedSchedule.filter(item => {
                 const diff = item.hqMinutes - targetTimeInMinutes;
-                // Consider times that are after current input, and up to maxDelayMinutes into the future
                 return diff >= 0 && diff <= maxDelayMinutes;
             });
 
-            validTimes.sort((a, b) => a.hqMinutes - b.hqMinutes); // Sort by HQ arrival time
+            validTimes.sort((a, b) => a.hqMinutes - b.hqMinutes);
 
             return validTimes.slice(0, 3).map(item => ({ gros: item.gros, hq: item.hq }));
         }
