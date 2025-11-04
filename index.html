@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Grosvenor</title>
+    <title>Rastreador Bus y Vuelos</title>
     <link rel="apple-touch-icon" href="https://i.imghippo.com/files/tEG3031vlA.png">
     <link rel="apple-touch-startup-image" href="https://example.com/splash.png">
     <style>
@@ -21,8 +21,8 @@
             width: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden;
-            touch-action: none;
+            overflow-y: auto;
+            touch-action: pan-y;
             background-color: #191970;
         }
 
@@ -32,17 +32,20 @@
             padding: 0;
             width: 100%;
             min-height: 100vh;
-            background: linear-gradient(to bottom, #191970, #000080); /* Fondo degradado */
+            height: auto;
+            background: linear-gradient(to bottom, #191970, #000080);
             background-size: cover;
             background-attachment: fixed;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             position: relative;
-            overflow: hidden;
-            touch-action: none;
+            overflow-x: hidden;
+            touch-action: pan-y;
             box-sizing: border-box;
+            padding-top: 5vh;
+            padding-bottom: 80px;
         }
 
         .emirates-logo {
@@ -70,35 +73,31 @@
             position: relative;
             margin-top: env(safe-area-inset-top);
             margin-bottom: env(safe-area-inset-bottom);
+            width: 340px;
+            box-sizing: border-box;
         }
 
-        /* Estilos para el contador */
         #countdown {
             font-size: 2.5em;
-            /* Removed gradient and clip for white text */
-            color: #000000; /* Set text color to white */
+            color: #000000;
             display: block;
             margin: 0;
             padding: 0;
         }
 
-        /* Estilos para la línea "Next bus at:" */
         #nextBus {
             font-size: 1.2em;
-            /* Removed gradient and clip for white text */
-            color: #000000; /* Set text color to white */
+            color: #000000;
             display: block;
             margin: 0;
             padding: 0;
         }
 
-        /* Estilos para el texto "Grosvenor to HQ in" */
         #routeTitle {
             font-size: 2em;
             font-weight: bold;
             display: block;
-            /* Removed gradient and clip for white text */
-            color: #000000; /* Set text color to white */
+            color: #000000;
             margin-bottom: 0;
             margin-top: 0;
             padding: 0;
@@ -190,7 +189,7 @@
         .input-container span {
             font-family: 'Emirates Bold';
             font-size: 1.2em;
-            color: #000000; /* Set text color to white */
+            color: #000000;
         }
         #busTimeInput {
             padding: 10px;
@@ -219,7 +218,7 @@
         #closestTimes {
             margin-top: 10px;
             font-size: 1.1em;
-            color: #000000; /* Set text color to white */
+            color: #000000;
             display: none;
         }
         #eGateButton {
@@ -241,12 +240,126 @@
         #eGateButton:hover {
             transform: scale(1.05);
         }
+
+        #flightRouteTitle {
+            font-size: 2em;
+            font-weight: bold;
+            display: block;
+            color: #000000;
+            margin-bottom: 10px;
+            margin-top: 0;
+            padding: 0;
+        }
+        
+        #flightSearchContainer {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .flight-input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+            gap: 5px;
+        }
+        
+        .flight-input-group label {
+            font-size: 0.9em;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .flight-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.1em;
+            border: 2px solid #2c3e50;
+            border-radius: 5px;
+            outline: none;
+            background-color: white;
+            color: #2c3e50;
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+            text-transform: uppercase;
+        }
+        
+        .flight-input::placeholder {
+            text-transform: none;
+        }
+
+        #startTrackingButton {
+            padding: 10px 15px;
+            font-size: 1.1em;
+            font-family: 'Emirates Bold';
+            background: #D70000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            height: 42px;
+            line-height: 1.5;
+            margin-top: 10px;
+        }
+        #startTrackingButton:hover {
+            background-color: #a30000;
+        }
+
+        #flightTimeTitle {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #000;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            display: none;
+        }
+        #flightTimeCounter {
+            font-size: 2.5em;
+            color: #000;
+            display: none;
+        }
+
+        #flightResult {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #000;
+            min-height: 40px;
+            text-align: left;
+            width: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            padding: 10px;
+            box-sizing: border-box;
+            display: none;
+        }
+        #flightResult strong {
+            color: #D70000;
+            display: block;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        #flightEmoji {
+            font-size: 24px;
+            position: absolute;
+            top: -20px;
+            left: 0;
+            transform: scaleX(1);
+            transition: left 0.5s linear;
+        }
     </style>
 </head>
 <body>
     <img src="https://upload.wikimedia.org/wikipedia/commons/archive/d/d0/20250508163912%21Emirates_logo.svg"
             alt="Emirates Logo" class="emirates-logo">
-    <div class="container">
+    
+    <div class="container" id="busContainer">
         <h1 id="routeTitle">Grosvenor to HQ in</h1>
         <div id="countdown">00:00</div>
         <div id="nextBus">Next bus at: --:--</div>
@@ -266,6 +379,32 @@
         </div>
         <div id="closestTimes"></div>
     </div>
+
+    <div class="container" id="flightContainer" style="margin-top: 20px;">
+        <h1 id="flightRouteTitle">Rastrear Vuelo</h1>
+        
+        <div id="flightSearchContainer">
+            <div class="flight-input-group" style="width: 100%;">
+                <label for="flightNumInput">Nº de Vuelo (Ej: 472)</label>
+                <input type="text" id="flightNumInput" class="flight-input" placeholder="472">
+            </div>
+            
+            <button id="startTrackingButton">Rastrear</button>
+        </div>
+        
+        <h1 id="flightTimeTitle">Tiempo Restante</h1>
+        <div id="flightTimeCounter">00:00:00</div>
+
+        <div id="flightResult"></div>
+
+        <div class="progress-container" id="flightProgressContainer" style="margin-top: 15px; display: none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="flightProgressFill" style="width: 0%;"></div>
+            </div>
+            <div class="bus-emoji" id="flightEmoji" style="left: 0px;">✈️</div>
+        </div>
+    </div>
+
     <div id="celestialBody">☀️</div>
     <div class="stars-container" id="starsContainer"></div>
 
@@ -335,6 +474,114 @@
             };
         }
 
+        function updateCountdown() {
+            const now = new Date();
+            const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes() + (now.getSeconds() + now.getMilliseconds() / 1000) / 60;
+            const { previousBus, nextBus } = getBusTimes();
+            let timeDifference = nextBus.minutes - currentTimeInMinutes;
+
+            const minutes = Math.floor(timeDifference % 60);
+            const seconds = Math.floor((timeDifference * 60) % 60);
+
+            document.getElementById('countdown').textContent =
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById('nextBus').textContent = `Next bus at: ${nextBus.time}`;
+
+            const totalDuration = (nextBus.minutes - previousBus.minutes);
+            const elapsed = (currentTimeInMinutes - previousBus.minutes);
+            const percentage = (elapsed / totalDuration) * 100;
+            const busPosition = Math.min(Math.max(percentage, 0), 100) * 2.76;
+
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = `${Math.min(Math.max(percentage, 0), 100)}%`;
+
+            const remainingMinutes = timeDifference;
+            if (remainingMinutes <= 3 && remainingMinutes > 2.9167) {
+                progressFill.style.transition = 'background-color 5s linear';
+                progressFill.style.backgroundColor = 'rgb(255, 0, 0)';
+            } else if (remainingMinutes > 3) {
+                const startColor = 204;
+                const endColor = 51;
+                const colorValue = Math.round(startColor - (startColor - endColor) * (percentage / 100));
+                progressFill.style.backgroundColor = `rgb(${colorValue}, ${colorValue}, ${colorValue})`;
+                progressFill.style.transition = 'background-color 0.5s linear';
+            } else if (remainingMinutes <= 2.9167) {
+                progressFill.style.backgroundColor = 'rgb(255, 0, 0)';
+                progressFill.style.transition = 'none';
+            }
+
+            document.getElementById('busEmoji').style.left = `${busPosition}px`;
+        }
+
+        function findClosestBusTimes(inputTime) {
+            const [inputHours, inputMinutes] = inputTime.split(':').map(Number);
+            const targetTimeInMinutes = inputHours * 60 + inputMinutes;
+            const maxDelayMinutes = 50;
+
+            const schedule = grosvenorToHQSchedule.map(item => ({
+                gros: item.gros,
+                hq: item.hq,
+                grosMinutes: item.gros.split(':').map(Number)[0] * 60 + item.gros.split(':').map(Number)[1],
+                hqMinutes: item.hq.split(':').map(Number)[0] * 60 + item.hq.split(':').map(Number)[1]
+            }));
+
+            const extendedSchedule = [];
+            schedule.forEach(item => {
+                extendedSchedule.push(item);
+                extendedSchedule.push({
+                    gros: item.gros,
+                    hq: item.hq,
+                    grosMinutes: item.grosMinutes + 1440,
+                    hqMinutes: item.hqMinutes + 1440
+                });
+            });
+
+            const validTimes = extendedSchedule.filter(item => {
+                const diff = item.hqMinutes - targetTimeInMinutes;
+                return diff >= 0 && diff <= maxDelayMinutes;
+            });
+
+            validTimes.sort((a, b) => a.hqMinutes - b.hqMinutes);
+
+            return validTimes.slice(0, 3).map(item => ({ gros: item.gros, hq: item.hq }));
+        }
+
+        document.getElementById('playButton').addEventListener('click', function() {
+            document.querySelector('.input-container').style.display = 'none';
+            document.getElementById('closestTimes').style.display = 'none';
+            const eGateButton = document.getElementById('eGateButton');
+            eGateButton.style.display = 'inline-block';
+            eGateButton.style.width = '100px';
+            eGateButton.style.height = '24px';
+            eGateButton.style.background = 'white';
+        });
+
+        document.getElementById('busTimeInput').addEventListener('change', function() {
+            const input = document.getElementById('busTimeInput').value.trim();
+            const closestTimesDiv = document.getElementById('closestTimes');
+
+            if (!input) {
+                closestTimesDiv.textContent = '';
+                closestTimesDiv.style.display = 'none';
+                return;
+            }
+
+            const closestTimes = findClosestBusTimes(input);
+            if (closestTimes.length === 0) {
+                closestTimesDiv.textContent = '';
+                closestTimesDiv.style.display = 'none';
+            } else {
+                const result = closestTimes.map(item => `${item.gros} ➡️ ${item.hq}`).join(', ');
+                closestTimesDiv.textContent = result;
+                closestTimesDiv.style.display = 'block';
+            }
+        });
+
+        document.getElementById('eGateButton').addEventListener('click', function() {
+            document.getElementById('eGateButton').style.display = 'none';
+            document.querySelector('.input-container').style.display = 'flex';
+        });
+        
         function updateSkyAndCelestial() {
             const now = new Date();
             const hours = now.getHours();
@@ -414,47 +661,6 @@
             celestial.style.display = 'block';
         }
 
-        function updateCountdown() {
-            const now = new Date();
-            const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes() + (now.getSeconds() + now.getMilliseconds() / 1000) / 60;
-            const { previousBus, nextBus } = getBusTimes();
-            let timeDifference = nextBus.minutes - currentTimeInMinutes;
-
-            const minutes = Math.floor(timeDifference % 60);
-            const seconds = Math.floor((timeDifference * 60) % 60);
-
-            document.getElementById('countdown').textContent =
-                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            document.getElementById('nextBus').textContent = `Next bus at: ${nextBus.time}`;
-
-            const totalDuration = (nextBus.minutes - previousBus.minutes);
-            const elapsed = (currentTimeInMinutes - previousBus.minutes);
-            const percentage = (elapsed / totalDuration) * 100;
-            const busPosition = Math.min(Math.max(percentage, 0), 100) * 2.76;
-
-            const progressFill = document.getElementById('progressFill');
-            progressFill.style.width = `${Math.min(Math.max(percentage, 0), 100)}%`;
-
-            const remainingMinutes = timeDifference;
-            if (remainingMinutes <= 3 && remainingMinutes > 2.9167) {
-                progressFill.style.transition = 'background-color 5s linear';
-                progressFill.style.backgroundColor = 'rgb(255, 0, 0)';
-            } else if (remainingMinutes > 3) {
-                const startColor = 204;
-                const endColor = 51;
-                const colorValue = Math.round(startColor - (startColor - endColor) * (percentage / 100));
-                progressFill.style.backgroundColor = `rgb(${colorValue}, ${colorValue}, ${colorValue})`;
-                progressFill.style.transition = 'background-color 0.5s linear';
-            } else if (remainingMinutes <= 2.9167) {
-                progressFill.style.backgroundColor = 'rgb(255, 0, 0)';
-                progressFill.style.transition = 'none';
-            }
-
-            document.getElementById('busEmoji').style.left = `${busPosition}px`;
-            
-            updateSkyAndCelestial();
-        }
-
         function createStars() {
             const starsContainer = document.getElementById('starsContainer');
             const numberOfStars = 50;
@@ -478,93 +684,220 @@
                 starsContainer.appendChild(star);
             }
         }
+        
+        const serpApiKey = "9d533c774eec65ea45119b6b665606e566b7818e9924f4f9f1b0838c84f342c7";
 
-        function findClosestBusTimes(inputTime) {
-            const [inputHours, inputMinutes] = inputTime.split(':').map(Number);
-            const targetTimeInMinutes = inputHours * 60 + inputMinutes;
-            const maxDelayMinutes = 50;
-
-            const schedule = grosvenorToHQSchedule.map(item => ({
-                gros: item.gros,
-                hq: item.hq,
-                grosMinutes: item.gros.split(':').map(Number)[0] * 60 + item.gros.split(':').map(Number)[1],
-                hqMinutes: item.hq.split(':').map(Number)[0] * 60 + item.hq.split(':').map(Number)[1]
-            }));
-
-            const extendedSchedule = [];
-            schedule.forEach(item => {
-                extendedSchedule.push(item);
-                extendedSchedule.push({
-                    gros: item.gros,
-                    hq: item.hq,
-                    grosMinutes: item.grosMinutes + 1440,
-                    hqMinutes: item.hqMinutes + 1440
-                });
-            });
-
-            const validTimes = extendedSchedule.filter(item => {
-                const diff = item.hqMinutes - targetTimeInMinutes;
-                return diff >= 0 && diff <= maxDelayMinutes;
-            });
-
-            validTimes.sort((a, b) => a.hqMinutes - b.hqMinutes);
-
-            return validTimes.slice(0, 3).map(item => ({ gros: item.gros, hq: item.hq }));
-        }
-
-        document.getElementById('playButton').addEventListener('click', function() {
-            document.querySelector('.input-container').style.display = 'none';
-            document.getElementById('closestTimes').style.display = 'none';
-            const eGateButton = document.getElementById('eGateButton');
-            eGateButton.style.display = 'inline-block';
-            eGateButton.style.width = '100px';
-            eGateButton.style.height = '24px';
-            eGateButton.style.background = 'white';
-        });
-
-        document.getElementById('busTimeInput').addEventListener('change', function() {
-            const input = document.getElementById('busTimeInput').value.trim();
-            const closestTimesDiv = document.getElementById('closestTimes');
-
-            if (!input) {
-                closestTimesDiv.textContent = '';
-                closestTimesDiv.style.display = 'none';
+        let flightDepartureTime = null;
+        let flightArrivalTime = null;
+        let flightNum = "";
+        
+        function updateFlightProgress() {
+            if (flightDepartureTime === null || flightArrivalTime === null) {
                 return;
             }
 
-            const closestTimes = findClosestBusTimes(input);
-            if (closestTimes.length === 0) {
-                closestTimesDiv.textContent = '';
-                closestTimesDiv.style.display = 'none';
-            } else {
-                const result = closestTimes.map(item => `${item.gros} ➡️ ${item.hq}`).join(', ');
-                closestTimesDiv.textContent = result;
-                closestTimesDiv.style.display = 'block';
-            }
-        });
+            const now = Date.now();
+            const titleEl = document.getElementById('flightTimeTitle');
+            const counterEl = document.getElementById('flightTimeCounter');
+            const progressFill = document.getElementById('flightProgressFill');
+            const flightEmoji = document.getElementById('flightEmoji');
+            const resultDiv = document.getElementById('flightResult');
 
-        document.getElementById('eGateButton').addEventListener('click', function() {
-            document.getElementById('eGateButton').style.display = 'none';
-            document.querySelector('.input-container').style.display = 'flex';
-        });
+            if (now < flightDepartureTime) {
+                titleEl.textContent = 'Falta para Despegue';
+                const remainingMs = flightDepartureTime - now;
+                counterEl.textContent = formatMilliseconds(remainingMs);
+                progressFill.style.width = '0%';
+                flightEmoji.style.left = '0px';
+
+            } else if (now > flightArrivalTime) {
+                titleEl.textContent = `Vuelo ${flightNum} Aterrizado`;
+                counterEl.textContent = "00:00:00";
+                progressFill.style.width = '100%';
+                flightEmoji.style.left = '276px';
+                
+                if (flightDepartureTime !== null) {
+                    flightDepartureTime = null; 
+                    flightArrivalTime = null;
+                     setTimeout(() => {
+                        document.getElementById('flightSearchContainer').style.display = 'flex';
+                        document.getElementById('flightTimeTitle').style.display = 'none';
+                        document.getElementById('flightTimeCounter').style.display = 'none';
+                        document.getElementById('flightProgressContainer').style.display = 'none';
+                        resultDiv.style.display = 'none';
+                        document.getElementById('flightNumInput').value = '';
+                    }, 10000);
+                }
+
+
+            } else {
+                titleEl.textContent = 'Tiempo Restante';
+                const remainingMs = flightArrivalTime - now;
+                counterEl.textContent = formatMilliseconds(remainingMs);
+
+                const totalDuration = flightArrivalTime - flightDepartureTime;
+                const elapsed = now - flightDepartureTime;
+                
+                let percentage = (elapsed / totalDuration) * 100;
+                percentage = Math.max(0, Math.min(100, percentage));
+
+                if (isNaN(percentage)) {
+                    percentage = 0;
+                }
+
+                const busPosition = percentage * 2.76;
+                
+                progressFill.style.width = `${percentage}%`;
+                progressFill.style.backgroundColor = '#007bff';
+                flightEmoji.style.left = `${busPosition}px`;
+            }
+        }
+
+        function formatMilliseconds(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = Math.floor(totalSeconds % 60);
+
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function handleFlightData(data) {
+            const resultDiv = document.getElementById('flightResult');
+
+            console.log("Respuesta COMPLETA de SerpApi:", data);
+
+            if (data.error) {
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `<strong>Error:</strong> ${data.error}`;
+                document.getElementById('flightSearchContainer').style.display = 'flex';
+                return;
+            }
+
+            const flightInfo = data.flight_info;
+
+            if (!flightInfo) { 
+                resultDiv.style.display = 'block';
+                let errorMsg = '<strong>Vuelo no encontrado.</strong><br>Verifica el número de vuelo.';
+                
+                if (data.answer_box && !data.flight_info) {
+                    errorMsg = '<strong>Error de API:</strong> Google devolvió una respuesta, pero no datos de vuelo.<br>Asegúrate de que el vuelo esté activo.';
+                } else if (!data.error && !data.answer_box) {
+                     errorMsg = '<strong>Respuesta vacía:</strong> La API no devolvió ni error ni vuelos. Verifica el número de vuelo.';
+                }
+
+                resultDiv.innerHTML = errorMsg;
+                document.getElementById('flightSearchContainer').style.display = 'flex';
+                return;
+            }
+            
+            const flight = flightInfo.segments[0];
+            
+            const depTimeStr = flight.departure.time_utc || flight.departure.time;
+            const arrTimeStr = flight.arrival.time_utc || flight.arrival.time;
+            
+            flightNum = (flightInfo.airline_code || "") + (flightInfo.flight_number || "");
+            flightDepartureTime = new Date(depTimeStr).getTime();
+            flightArrivalTime = new Date(arrTimeStr).getTime();
+
+            if (isNaN(flightDepartureTime) || isNaN(flightArrivalTime)) {
+                 resultDiv.style.display = 'block';
+                resultDiv.innerHTML = 'Error al procesar las horas del vuelo.';
+                document.getElementById('flightSearchContainer').style.display = 'flex';
+                return;
+            }
+
+            document.getElementById('flightSearchContainer').style.display = 'none';
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `<strong>Rastreando ${flightNum}</strong><br>De: ${flight.departure.airport.id}<br>A: ${flight.arrival.airport.id}<br>Avión: ${flight.aircraft.name || 'No disponible'}`;
+            
+            document.getElementById('flightTimeTitle').style.display = 'block';
+            document.getElementById('flightTimeCounter').style.display = 'block';
+            document.getElementById('flightProgressContainer').style.display = 'block';
+
+            updateFlightProgress();
+        }
+
+        async function startAutomaticTracking() {
+            const numInput = document.getElementById('flightNumInput').value.trim().toUpperCase();
+            const resultDiv = document.getElementById('flightResult');
+
+            if (!numInput) { 
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = 'Por favor, introduce un número de vuelo.';
+                return;
+            }
+
+            flightDepartureTime = null;
+            flightArrivalTime = null;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'Buscando vuelo...';
+            document.getElementById('flightSearchContainer').style.display = 'none';
+
+            let flightId = numInput.replace(/\s/g, '');
+            const isNumeric = /^\d+$/.test(flightId);
+            
+            if (isNumeric) {
+                flightId = 'EY' + flightId;
+            }
+            
+            const originalUrl = `https://serpapi.com/search.json?engine=google&q=${flightId}&gl=ae&hl=es&api_key=${serpApiKey}`;
+
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(originalUrl)}`;
+
+            try {
+                const response = await fetch(proxyUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`Error del proxy: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.contents) {
+                    const flightData = JSON.parse(data.contents);
+                    handleFlightData(flightData); 
+                } else {
+                    throw new Error("Respuesta del proxy vacía o mal formada.");
+                }
+
+            } catch (error) {
+                console.error("Error en startAutomaticTracking:", error);
+                resultDiv.innerHTML = `<strong>Error de red:</strong> No se pudo contactar con la API. ${error.message}`;
+                document.getElementById('flightSearchContainer').style.display = 'flex';
+            }
+        }
+
+        document.getElementById('startTrackingButton').addEventListener('click', startAutomaticTracking);
 
         window.onload = function() {
             window.scrollTo(0, 0);
             updateSkyAndCelestial();
             updateCountdown();
+            
             const now = new Date();
             if (now.getHours() < 6 || now.getHours() >= 18) {
                 createStars();
             }
+            
+            startUpdateLoop();
         };
 
-        let intervalId = null;
-        function startUpdateLoop() {
-            if (intervalId) clearInterval(intervalId);
-            intervalId = setInterval(updateCountdown, 100);
-        }
+        let busIntervalId = null;
+        let skyIntervalId = null;
+        let flightIntervalId = null;
 
-        startUpdateLoop();
+        function startUpdateLoop() {
+            if (busIntervalId) clearInterval(busIntervalId);
+            if (skyIntervalId) clearInterval(skyIntervalId);
+            if (flightIntervalId) clearInterval(flightIntervalId);
+
+            busIntervalId = setInterval(updateCountdown, 100); 
+            skyIntervalId = setInterval(updateSkyAndCelestial, 300000);
+            flightIntervalId = setInterval(updateFlightProgress, 1000);
+        }
     </script>
     <svg class="dune" viewBox="0 0 1000 250" preserveAspectRatio="none">
     <defs>
@@ -585,3 +918,4 @@
 </svg>
 </body>
 </html>
+
